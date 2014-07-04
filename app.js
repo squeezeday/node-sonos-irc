@@ -1,42 +1,35 @@
-// requires https://github.com/martynsmith/node-irc (0.3.x branch) and https://github.com/bencevans/node-sonos
 
-//config
-var chan = '#foo';
-var nick = 'IAmSonosBot';
-var server = 'irc.freenode.net';
-var devices = []; // [] for auto scan
-// end config
-
-var Sonos = require('./node-sonos').Sonos;
+var Sonos = require('sonos').Sonos;
 var https = require('https');
+var irc = require("irc");
+var config = require('./config');
 
-if (devices.length == 0) {
-	var search = require('./node-sonos').search();
+if (config.devices.length == 0) {
+	var search = require('sonos').search();
 	search.on('DeviceAvailable', function(device, model) {
 	  console.log(device, model);
-	  devices.push(device);
+	  config.devices.push(device);
 	});
 }
 
-var irc = require("./node-irc");
-var client = new irc.Client(server, nick, {
-    channels: [chan],
+var client = new irc.Client(config.server, config.nick, {
+    channels: [config.chan],
 });
 client.addListener('error', function(message) {
     console.log('error: ', message);
 });
-client.addListener('message'+chan, function (from, message) {
+client.addListener('message'+config.chan, function (from, message) {
 	if (message == '!sonos') {
 		for (var i=0; i<devices.length; i++) {
-			var sonosdev = new Sonos(devices[i].host);
+			var sonosdev = new Sonos(config.devices[i].host);
 			sonosdev.currentTrack(function(err, track) { // TODO: getCurrentState?
-			  client.say(chan, track.artist + ' - ' + track.title);
+			  client.say(config.chan, track.artist + ' - ' + track.title);
 			});
 		}
 		return;
 	}
 	parseMessage(message, function(ret) { 
-		client.say(chan, ret); 
+		client.say(config.chan, ret); 
 	});
 })
 
@@ -46,10 +39,11 @@ function parseMessage(message, cb) {
 		var device_index = cmdmatch[1] || 0;
 		var cmd = cmdmatch[2];
 		var arg = cmdmatch[3];
-		if (device_index > devices.length -1) {
+		if (device_index > config.devices.length -1) {
 			cb('Invalid device');
+			return;
 		}
-		var sonosdev = new Sonos(devices[device_index].host);
+		var sonosdev = new Sonos(config.devices[device_index].host);
 		switch (cmd)
 		{
 			case 'next':

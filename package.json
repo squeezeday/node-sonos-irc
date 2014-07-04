@@ -1,0 +1,32 @@
+{
+  "name": "sonos-irc",
+  "version": "0.1.1",
+  "description": "Node.js Sonos Interface for IRC",
+  "main": "app.js",
+  "scripts": {
+    "test": "grunt"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/squeezeday/node-sonos-irc.git"
+  },
+  "keywords": [
+    "sonos",
+    "music",
+    "control",
+    "play",
+    "interface"
+  ],
+  "author": "squeezeday",
+  "contributors": [],
+  "license": "MIT",
+  "dependencies": {
+    "sonos": "~0.6",
+    "node-irc": "git://github.com/martynsmith/node-irc.git#0.3.x"
+  },
+  "bugs": {
+    "url": "http://github.com/squeezeday/node-sonos-irc/issues"
+  },
+  "devDependencies": {
+  }
+}
