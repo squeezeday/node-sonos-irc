@@ -23,7 +23,8 @@ client.addListener('message'+config.chan, function (from, message) {
 		for (var i=0; i<devices.length; i++) {
 			var sonosdev = new Sonos(config.devices[i].host);
 			sonosdev.currentTrack(function(err, track) { // TODO: getCurrentState?
-			  client.say(config.chan, track.artist + ' - ' + track.title);
+				if (!err && track)
+					client.say(config.chan, track.artist + ' - ' + track.title);
 			});
 		}
 		return;
